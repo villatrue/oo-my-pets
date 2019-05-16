@@ -2,20 +2,30 @@ require 'pry'
 
 class Owner
   # code goes here
-  attr_accessor :dogs
-  attr_reader :name, :species, :cats, :pets
+  attr_reader :name, :species
 
   @@all = []
 
   def initialize(name)
     @name = name
-    @cats = []
-    @dogs = []
-    @pets = []
     @@all << self
     @species = "human"
     # @species = species
 
+  end
+
+  def cats
+    Cat.all
+  end
+
+  def dogs
+    Dog.all
+  end
+
+  def cats_by_owner
+    Cat.all.select do |cat|
+      cat.owner == self
+    end
   end
 
   def self.count
@@ -27,7 +37,7 @@ class Owner
   end
 
   def buy_cat(name)
-    cat = Cat.new(name, self)
+    Cat.new(name, self)
     #getting ready to initialize an array of new cats getting lunch now
 
 # can buy a cat that is an instance of the Cat class (FAILED - 1)
@@ -51,14 +61,15 @@ class Owner
      end
 
     def feed_cats
-      self.cats.each do |cat|
+      cats.each do |cat|
         cat.mood = "happy"
       end
       # feeds cats which makes the cats' moods happy (FAILED - 6)
     end
 
     def sell_pets
-      self.pets.each do |pet|
+      pets = (self.dogs + self.cats).flatten
+      pets.each do |pet|
         pet.mood = "nervous"
         pet.owner = nil
       end
